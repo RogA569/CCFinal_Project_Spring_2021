@@ -9,8 +9,8 @@ class Firework {
 
 		// vectors
 		//this.lift = createVector(0, 5); // create a lift vector with y = 5
-		this.gravity = createVector(0, -0.05); // create a gravity vector with y = -0.2
-		this.velocity = createVector(0, 8); // create a velocity vector that starts at y = 5
+		this.gravity = createVector(0, -0.03); // create a gravity vector with y = -0.03
+		this.velocity = createVector(0, 8); // create a velocity vector that starts at y = 8
 
 		// explosion attributes
 		this.bit1_x = this.x + random(10);
@@ -37,9 +37,9 @@ class Firework {
 
 		//trail
 		fill(255, 255, 0); // yellow
-		// trail length varies from the y-pos of firework launch (height)
+		// trail length varies from the y-pos of firework launch (height/2)
 		// to 5 pixels below y-pos of firework in the air (this.y+5)
-		for (let trail_length = height; trail_length >= this.y+5; trail_length -= 10) {
+		for (let trail_length = height/2; trail_length >= this.y+5; trail_length -= 10) {
 			rectMode(CENTER);
 			rect(this.x, trail_length, 5, 10); // TURN INTO SOMETHING MORE LIKE A FIREWORK TRAIL
 		}
@@ -62,13 +62,14 @@ class Firework {
 		noStroke();
 		circle(this.bit1_x, this.bit1_y, 5);
 
+
 	}
 
 	restart() {
 		// makes the firework shoot once more
 
-		//this.x = x_;
-		//this.y = y_;
+		this.x = x_;
+		this.y = y_;
 
 	}
 
