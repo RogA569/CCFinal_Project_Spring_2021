@@ -1,7 +1,10 @@
-// Problems: I don't know how to come back to a loop after resetting y position of the firework
-// I don't know how to make a new shape whose x and y positions differ by a random value than the shape in display()
+// Roger Argueta
 
-let explosion;
+let scene; // incremental scene counter
+
+// firework variables
+let explosion; // sound file of firework explosion
+let fireworks; // array of objects of Firework class
 
 function preload() {
 	soundFormats('wav');
@@ -10,12 +13,9 @@ function preload() {
 
 function setup() {
 	createCanvas(800, 600, WEBGL);
+	scene = 1;
 
-	//fireworks in Scene 1
-	firework1 = new Firework(0, height);
-
-	explosion.play();
-
+	fireworks = [];
 
 	//2021 structure in Scenes 1 and 2
 	twty_twty_one = createWord3D("2021", width/35, width/150, 30);
@@ -24,28 +24,38 @@ function setup() {
 function draw() {
 	background(0);
 
-	//Scene 1
+	switch (scene) {
 
-	if (firework1.y > (-height/2 + 10)) {
-		firework1.display();
-		firework1.rise();
-	} else if (firework1.y <= (-height/2 + 10)) {
+		//Scene 1
+		case 1:
+			for (let x = random(-(width/4), -(width/4)+60); x < (width/4); x += random(25, 75)) {
+				let new_firework = new Firework(x, height);
+				fireworks.push(new_firework);
+			}
 
-			firework1.explode();
+			for (let firework = 0; firework < fireworks.length; firework++) {
+				fireworks[firework].display();
+				fireworks[firework].rise();
+					
+				if (fireworks[firework].y <= height/2 && fireworks[firework].y >= height/2-10) {
+					explosion.play();
+				}
+				fireworks[firework].explode();
+				if (fireworks[firework].explode()) {
+					fireworks.splice(fireworks[firework], 1);
+				}
+				break;
+			}
 
-			firework1.x = width/2;
-			firework1.y = height;
-			console.log(firework1.y);
-		}
+			twty_twty_one.show();	
+		// end of Scene 1
 
-	twty_twty_one.show();
-	
-	// end of Scene 1 (2021 structure is still part of Scene 2)
-
-	// Scene 2
+		// Scene 2
 
 
 
-	// end of Scene 2
+		// end of Scene 2
+
+	} // end of switch statement
 
 }
