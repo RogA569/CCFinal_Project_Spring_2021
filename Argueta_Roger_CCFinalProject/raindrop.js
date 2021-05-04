@@ -7,15 +7,18 @@ class Raindrop {
 		this.x = x_;
 		this.y = y_;
 
-		//vectors
-		this.velocity = createVector(0, 0); // no velocity to start with
-		this.gravity = createVector(0, -0.03) // gravity will start to add velocity
+		this.velocity = createVector(0, 9.8); // velocity with y = 2
 	}
 
 	display() {
-		fill(188, 227, 240); // light blue
-		noStroke();
+		stroke(188, 227, 240); // light blue
 		line(this.x, this.y, this.x, this.y+20);
+	}
+
+	fall() {
+		// makes the raindrop fall by adding terminal velocity to this.y
+		// once it reaches the bottom 
+		this.y += this.velocity.y;
 	}
 
 
