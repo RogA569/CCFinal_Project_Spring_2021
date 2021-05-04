@@ -7,7 +7,7 @@ class Firework {
 		this.x = x_;
 		this.y = y_;
 
-		this.peak_height = random((-height/2), -50);
+		this.peak_height = random((-height/2), -50); // each firework has their own peak height within a certain random range
 
 		// vectors
 		this.gravity = createVector(0, -0.03); // create a gravity vector with y = -0.03

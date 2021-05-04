@@ -9,7 +9,7 @@ let fireworks; // array of objects of Firework class
 let explosion; // sound file of firework explosion
 
 // raindrop variables
-let raindrop_1;
+let raindrops; // array of object of Raindrop class
 let single_patter; // sound file of a single raindrop
 
 // voiceover variables; sound files for each line in script
@@ -20,6 +20,7 @@ let voiceover_4;
 let voiceover_5;
 let voiceover_6;
 let voiceover_7;
+let voice_switch; // allows voice to speak only once in draw()
 
 function preload() {
 	soundFormats('wav');
@@ -41,23 +42,18 @@ function preload() {
 
 function setup() {
 	createCanvas(800, 600, WEBGL);
-	scene = 2; // SET TO WHATEVER SCENE YOU'RE WORKING ON
+	scene = 3; // SET TO WHATEVER SCENE YOU'RE WORKING ON
 
 	userStartAudio(); // need this when running in a browser because of its autoplay policy
 
+	voice_switch = true;
+
 	fireworks = [];
 
-	raindrop_1 = new Raindrop(0, -height/4);
+	raindrops = [];
 
 	// 2021 structure in Scenes 1 and 2
 	twty_twty_one = createWord3D("2021", width/35, width/150, 30);
-
-	// voiceover lines (dependent on scene number)
-	// PROBLEM: THIS DOESN'T WORK FOR SOME REASON
-	if (scene == 2) {
-		voiceover_1.play();
-	}
-
 }
 
 function draw() {
@@ -76,12 +72,12 @@ function draw() {
 				fireworks[firework].display();
 				fireworks[firework].rise();
 					
-				if (fireworks[firework].y <= height/2 && fireworks[firework].y >= height/2-10) {
-					explosion.play();
+				if (fireworks[firework].y <= height/2 && fireworks[firework].y >= height/2 - 10) {
+					explosion.play(); // plays whistle/explosion sound as soon as it's launched
 				}
 				fireworks[firework].explode();
 				if (fireworks[firework].explode()) {
-					fireworks.splice(fireworks[firework], 1);
+					fireworks.splice(fireworks[firework], 1); // remove individual firework from fireworks array
 				}
 				break;
 			}
@@ -93,11 +89,26 @@ function draw() {
 
 		// Scene 2
 		case 2:
-			raindrop_1.display();
-			raindrop_1.fall();
+			if (voice_switch) {
+				voiceover_1.play();
+				voice_switch = false;
+			}
+			for (let x = -width/2 + 10; x < width/2; x++) {
+				let new_raindrop = new Raindrop(random(-width/2, width/2), random(-height/2, (-height/2 + 15)));
+				raindrops.push(new_raindrop);
+			}
 
-			if (raindrop_1.y >= height/2) {
-				single_patter.play();
+			for (let raindrop = 0; raindrop < raindrops.length; raindrop++) {
+				if (raindrops[raindrop].y < height/2) {
+					raindrops[raindrop].display();
+					raindrops[raindrop].fall();
+				}
+
+				if (raindrops[raindrop].y >= height/2) {
+					single_patter.play();
+					raindrops.splice(raindrops[raindrop], 1); // remove individual raindrop from array
+				}
+				break;
 			}
 
 			twty_twty_one.show();
@@ -107,26 +118,59 @@ function draw() {
 
 		//Scene 3
 		case 3:
+			if (voice_switch) {
+				voiceover_2.play();
+				voice_switch = false; // so that voiceover doesn't play again and again
+			}
+
+			background(117, 234, 234);
+
+			drawHills();
+
 			break;
 		// end of Scene 3
 
 		// Scene 4
 		case 4:
+			if (voice_switch) {
+				voiceover_3.play();
+				voice_switch = false;
+			}
+
 			break;
 		// end of Scene 4
 
 		// Scene 5
 		case 5:
+			if (voice_switch) {
+				voiceover_4.play();
+				voice_switch = false;
+			}
+
+			drawHills();
+
 			break;
 		// end of Scene 5
 
 		// Scene 6
 		case 6:
+			if (voice_switch) {
+				voiceover_5.play();
+				voice_switch = false;
+			}
+
 			break;
 		// end of Scene 6
 
 		// Scene 7 (user-dependent)
 		case 7:
+			if (voice_switch) {
+				// another if statement based on user choice
+				//voiceover_6.play(); // yes
+				voiceover_7.play(); // no
+				voice_switch = false;
+			}
+
 			break;
 		// end of Scene 7
 
@@ -151,6 +195,45 @@ function draw() {
 
 function keyPressed() {
 	if (key == ' ') {
-		scene++;
+		scene++; // go to next scene
+		voice_switch = true; // reset voice switch
 	}
+}
+
+function drawHills() {
+	// draws hills from Scenes 3 and 5
+	let hill_1_x_start = width/2
+	let hill_1_y_start = 50;
+	fill(0, 255, 0);
+	//noStroke();
+	
+	// back hill
+	beginShape();
+		vertex(hill_1_x_start, height/2);
+
+		// long curve
+		curveVertex(hill_1_x_start, hill_1_y_start); // beginning guide
+		curveVertex(hill_1_x_start, hill_1_y_start);
+		curveVertex(hill_1_x_start - 75, hill_1_y_start - 10);
+		curveVertex(hill_1_x_start - 165, hill_1_y_start - 10);
+		curveVertex(hill_1_x_start - 205, hill_1_y_start - 25);
+		curveVertex(hill_1_x_start - 300, hill_1_y_start - 25);
+		curveVertex(hill_1_x_start - 350, hill_1_y_start - 40);
+		curveVertex(hill_1_x_start - 415, hill_1_y_start - 35);
+		curveVertex(hill_1_x_start - 450, hill_1_y_start - 40);
+		curveVertex(hill_1_x_start - 500, hill_1_y_start - 40);
+		curveVertex(-width/2, hill_1_y_start - 25);
+		curveVertex(-width/2, hill_1_y_start - 25); // end guide
+		
+		vertex(-width/2, height/2);
+	endShape();
+
+	// front hill
+
+}
+
+function drawSun() {
+	// draws the sun
+	// definitely will be modified bc the sun's face changes
+	// from Scene 3 when it's Scene 5
 }

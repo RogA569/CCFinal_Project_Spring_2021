@@ -7,7 +7,7 @@ class Raindrop {
 		this.x = x_;
 		this.y = y_;
 
-		this.velocity = createVector(0, 9.8); // velocity with y = 2
+		this.velocity = createVector(0, 100); // velocity with y = 100
 	}
 
 	display() {
