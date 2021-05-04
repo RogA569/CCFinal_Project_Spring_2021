@@ -202,10 +202,14 @@ function keyPressed() {
 
 function drawHills() {
 	// draws hills from Scenes 3 and 5
-	let hill_1_x_start = width/2
+	
+	// hill 1 starts from right to left, sloping upwards
+	let hill_1_x_start = width/2;
 	let hill_1_y_start = 50;
+	// hill 2 starts from left to right, sloping downwards
+	let hill_2_x_start = -width/2;
+	let hill_2_y_start = -12;
 	fill(0, 255, 0);
-	//noStroke();
 	
 	// back hill
 	beginShape();
@@ -214,21 +218,39 @@ function drawHills() {
 		// long curve
 		curveVertex(hill_1_x_start, hill_1_y_start); // beginning guide
 		curveVertex(hill_1_x_start, hill_1_y_start);
-		curveVertex(hill_1_x_start - 75, hill_1_y_start - 10);
-		curveVertex(hill_1_x_start - 165, hill_1_y_start - 10);
-		curveVertex(hill_1_x_start - 205, hill_1_y_start - 25);
+		curveVertex(hill_1_x_start - 65, hill_1_y_start - 5);
+		curveVertex(hill_1_x_start - 150, hill_1_y_start - 2);
+		curveVertex(hill_1_x_start - 220, hill_1_y_start - 25);
 		curveVertex(hill_1_x_start - 300, hill_1_y_start - 25);
 		curveVertex(hill_1_x_start - 350, hill_1_y_start - 40);
 		curveVertex(hill_1_x_start - 415, hill_1_y_start - 35);
 		curveVertex(hill_1_x_start - 450, hill_1_y_start - 40);
+		curveVertex(hill_1_x_start - 470, hill_1_y_start - 42);
 		curveVertex(hill_1_x_start - 500, hill_1_y_start - 40);
-		curveVertex(-width/2, hill_1_y_start - 25);
-		curveVertex(-width/2, hill_1_y_start - 25); // end guide
-		
-		vertex(-width/2, height/2);
+		curveVertex(hill_1_x_start - 555, hill_1_y_start - 37);
+		curveVertex(hill_1_x_start - 555, hill_1_y_start - 37);
+		//curveVertex(-width/2, hill_1_y_start - 25);
+		//curveVertex(-width/2, hill_1_y_start - 25); // end guide		
 	endShape();
 
 	// front hill
+	beginShape();
+		vertex(hill_2_x_start, height/2);
+
+		// long curve
+		curveVertex(hill_2_x_start, hill_2_y_start);
+		curveVertex(hill_2_x_start, hill_2_y_start);
+		curveVertex(hill_2_x_start + 50, hill_2_y_start + 5);
+		curveVertex(hill_2_x_start + 125, hill_2_y_start + 5);
+		curveVertex(hill_2_x_start + 180, hill_2_y_start + 20);
+		curveVertex(hill_2_x_start + 215, hill_2_y_start + 25);
+		curveVertex(hill_2_x_start + 365, hill_2_y_start + 35);
+		curveVertex(hill_2_x_start + 600, hill_2_y_start + 120);
+		curveVertex(width/2, hill_2_y_start + 250);
+		curveVertex(width/2, hill_2_y_start + 250);
+
+		vertex(width/2, height/2);
+	endShape();	
 
 }
 
