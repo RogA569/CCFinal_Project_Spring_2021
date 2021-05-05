@@ -125,6 +125,7 @@ function draw() {
 
 			background(117, 234, 234);
 
+			drawSun(); // curious as to why the stroke of sun appears behind the hills
 			drawHills();
 
 			break;
@@ -210,6 +211,7 @@ function drawHills() {
 	let hill_2_x_start = -width/2;
 	let hill_2_y_start = -12;
 	fill(0, 255, 0);
+	stroke(1);
 	
 	// back hill
 	beginShape();
@@ -258,4 +260,21 @@ function drawSun() {
 	// draws the sun
 	// definitely will be modified bc the sun's face changes
 	// from Scene 3 when it's Scene 5
+
+	fill(255, 255, 0);
+	circle(0, 0, width/2.5);
+
+	//rays
+	for (let angle = 0; angle < 360; angle += 40) {
+		noStroke();
+		push();
+			rotate(radians(angle));
+			beginShape(TRIANGLES);
+				vertex(-50, width/5-10);
+				vertex(0, width/5 + 75);
+				vertex(50, width/5-10);
+			endShape();
+		pop();
+	}
+
 }
