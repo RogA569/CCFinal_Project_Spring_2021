@@ -42,7 +42,7 @@ function preload() {
 
 function setup() {
 	createCanvas(800, 600, WEBGL);
-	scene = 3; // SET TO WHATEVER SCENE YOU'RE WORKING ON
+	scene = 4; // SET TO WHATEVER SCENE YOU'RE WORKING ON
 
 	userStartAudio(); // need this when running in a browser because of its autoplay policy
 
@@ -138,6 +138,10 @@ function draw() {
 				voice_switch = false;
 			}
 
+			background(75, 76, 81);
+
+			drawVolcano();
+
 			break;
 		// end of Scene 4
 
@@ -148,6 +152,9 @@ function draw() {
 				voice_switch = false;
 			}
 
+			background(21, 33, 55);
+
+			drawSun();
 			drawHills();
 
 			break;
@@ -277,4 +284,26 @@ function drawSun() {
 		pop();
 	}
 
+}
+
+function drawVolcano() {
+	// draws volcano
+
+	fill(23, 52, 83);
+
+	beginShape();
+		// left slope
+		curveVertex(-50, 0);
+		curveVertex(-50, 0);
+		curveVertex(8, -50);
+		curveVertex(50, -100);
+
+		curveVertex(67.5, -107	);
+
+		// right slope
+		curveVertex(85, -100);
+		curveVertex(105, -55);
+		curveVertex(135, 5);
+		curveVertex(135, 5);
+	endShape();
 }
