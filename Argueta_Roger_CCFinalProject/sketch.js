@@ -11,6 +11,9 @@ let explosion; // sound file of firework explosion
 let raindrops; // array of object of Raindrop class
 let single_patter; // sound file of a single raindrop
 
+// image variables
+let the_scream; // the subject of Edward Munch's The Scream
+
 // voiceover variables; sound files for each line in script
 let voiceover_1;
 let voiceover_2;
@@ -22,8 +25,9 @@ let voiceover_7;
 let voice_switch; // allows voice to speak only once in draw()
 
 function preload() {
+	the_scream = loadImage('assets/Munch_Scream_Outline.png');
+
 	soundFormats('wav');
-	
 	voiceover_1 = loadSound('assets/sound_files/Voiceover_Lines/VoiceoverScriptLine1');
 	voiceover_2 = loadSound('assets/sound_files/Voiceover_Lines/VoiceoverScriptLine2');
 	voiceover_3 = loadSound('assets/sound_files/Voiceover_Lines/VoiceoverScriptLine3');
@@ -36,14 +40,13 @@ function preload() {
 
 	single_patter = loadSound('assets/sound_files/17877__koops__rain-patter-01_render_001');
 
-
 }
 
 function setup() {
 	createCanvas(800, 600, WEBGL);
 	pg = createGraphics(width, height); // for the scenes that render in 2D mode
 
-	scene = 4; // SET TO WHATEVER SCENE YOU'RE WORKING ON
+	scene = 5; // SET TO WHATEVER SCENE YOU'RE WORKING ON
 	userStartAudio(); // need this when running in a browser because of its autoplay policy
 	voice_switch = true;
 	fireworks = [];
@@ -160,13 +163,14 @@ function draw() {
 				voice_switch = false;
 			}
 
-			background(21, 33, 55);
+			background(51, 69, 91);
 
 			image(pg, -width/2, -height/2);
 
 			pg.push();
 				pg.translate(width/2, height/2);
 				drawSun();
+				drawMoonScream();
 				drawHills();
 			pg.pop();
 
@@ -218,7 +222,7 @@ function keyPressed() {
 	if (key == ' ') {
 		scene++; // go to next scene
 		voice_switch = true; // reset voice switch
-		pg.clear(); //clear everything, including the buffer for 2D mode
+		pg.clear(); //clear insde the 2D mode buffer
 	}
 }
 
@@ -231,7 +235,12 @@ function drawHills() {
 	// hill 2 starts from left to right, sloping downwards
 	let hill_2_x_start = -width/2;
 	let hill_2_y_start = -12;
-	pg.fill(0, 255, 0);
+	
+	if (scene == 3) {
+		pg.fill(0, 255, 0);
+	} else if (scene == 5) {
+		pg.fill(0, 61, 55);
+	}
 	pg.stroke(1);
 	
 	// back hill
@@ -300,6 +309,24 @@ function drawSun() {
 	}
 
 	pg.circle(0, 0, width/2.5);
+}
+
+function drawMoonScream() {
+	// draws the moon and
+	// the silhouette of the
+	// subject of Munch's The Scream
+
+	pg.fill(255, 246, 199);
+
+	// moon
+	pg.circle(width/4, -height/4, width/2.5);
+
+	// The Scream, silhouette
+	pg.blendMode(DIFFERENCE);
+	the_scream.resize(143, 320)
+	pg.image(the_scream, width/4 - 70, -height/2 - 10);
+	pg.blendMode(BLEND);
+
 }
 
 function drawVolcano() {
