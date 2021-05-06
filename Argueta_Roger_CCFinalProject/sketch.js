@@ -1,8 +1,7 @@
 // Roger Argueta
 
-// scene variables
+let pg; // 2D buffer for 2D scenes
 let scene; // incremental scene counter
-
 
 // firework variables
 let fireworks; // array of objects of Firework class
@@ -42,14 +41,12 @@ function preload() {
 
 function setup() {
 	createCanvas(800, 600, WEBGL);
+	pg = createGraphics(width, height); // for the scenes that render in 2D mode
+
 	scene = 4; // SET TO WHATEVER SCENE YOU'RE WORKING ON
-
 	userStartAudio(); // need this when running in a browser because of its autoplay policy
-
 	voice_switch = true;
-
 	fireworks = [];
-
 	raindrops = [];
 
 	// 2021 structure in Scenes 1 and 2
@@ -125,8 +122,13 @@ function draw() {
 
 			background(117, 234, 234);
 
-			drawSun(); // curious as to why the stroke of sun appears behind the hills
-			drawHills();
+			image(pg, -width/2, -height/2); // display the buffer, which serves as the sketch's 2D space, at top-left
+
+			pg.push(); // every function that's in the buffer will be pg.[shape/transformation function]
+				pg.translate(width/2, height/2);
+				drawSun(); // the custom functions themselves have elements that are pg.[element]
+				drawHills();
+			pg.pop();
 
 			break;
 		// end of Scene 3
@@ -140,7 +142,13 @@ function draw() {
 
 			background(75, 76, 81);
 
-			drawVolcano();
+			image(pg, -width/2, -height/2);
+
+			pg.push();
+				pg.translate(width/2, height/2);
+				drawVolcano();
+				drawSea();
+			pg.pop();
 
 			break;
 		// end of Scene 4
@@ -154,8 +162,13 @@ function draw() {
 
 			background(21, 33, 55);
 
-			drawSun();
-			drawHills();
+			image(pg, -width/2, -height/2);
+
+			pg.push();
+				pg.translate(width/2, height/2);
+				drawSun();
+				drawHills();
+			pg.pop();
 
 			break;
 		// end of Scene 5
@@ -205,6 +218,7 @@ function keyPressed() {
 	if (key == ' ') {
 		scene++; // go to next scene
 		voice_switch = true; // reset voice switch
+		pg.clear(); //clear everything, including the buffer for 2D mode
 	}
 }
 
@@ -217,49 +231,51 @@ function drawHills() {
 	// hill 2 starts from left to right, sloping downwards
 	let hill_2_x_start = -width/2;
 	let hill_2_y_start = -12;
-	fill(0, 255, 0);
-	stroke(1);
+	pg.fill(0, 255, 0);
+	pg.stroke(1);
 	
 	// back hill
-	beginShape();
-		vertex(hill_1_x_start, height/2);
+	pg.beginShape();
+		pg.vertex(hill_1_x_start, height/2);
 
 		// long curve
-		curveVertex(hill_1_x_start, hill_1_y_start); // beginning guide
-		curveVertex(hill_1_x_start, hill_1_y_start);
-		curveVertex(hill_1_x_start - 65, hill_1_y_start - 5);
-		curveVertex(hill_1_x_start - 150, hill_1_y_start - 2);
-		curveVertex(hill_1_x_start - 220, hill_1_y_start - 25);
-		curveVertex(hill_1_x_start - 300, hill_1_y_start - 25);
-		curveVertex(hill_1_x_start - 350, hill_1_y_start - 40);
-		curveVertex(hill_1_x_start - 415, hill_1_y_start - 35);
-		curveVertex(hill_1_x_start - 450, hill_1_y_start - 40);
-		curveVertex(hill_1_x_start - 470, hill_1_y_start - 42);
-		curveVertex(hill_1_x_start - 500, hill_1_y_start - 40);
-		curveVertex(hill_1_x_start - 555, hill_1_y_start - 37);
-		curveVertex(hill_1_x_start - 555, hill_1_y_start - 37);
+		pg.curveVertex(hill_1_x_start, hill_1_y_start); // beginning guide
+		pg.curveVertex(hill_1_x_start, hill_1_y_start);
+		pg.curveVertex(hill_1_x_start - 65, hill_1_y_start - 5);
+		pg.curveVertex(hill_1_x_start - 150, hill_1_y_start - 2);
+		pg.curveVertex(hill_1_x_start - 220, hill_1_y_start - 25);
+		pg.curveVertex(hill_1_x_start - 300, hill_1_y_start - 25);
+		pg.curveVertex(hill_1_x_start - 350, hill_1_y_start - 40);
+		pg.curveVertex(hill_1_x_start - 415, hill_1_y_start - 35);
+		pg.curveVertex(hill_1_x_start - 450, hill_1_y_start - 40);
+		pg.curveVertex(hill_1_x_start - 470, hill_1_y_start - 42);
+		pg.curveVertex(hill_1_x_start - 500, hill_1_y_start - 40);
+		pg.curveVertex(hill_1_x_start - 555, hill_1_y_start - 37);
+		pg.curveVertex(hill_1_x_start - 555, hill_1_y_start - 37);
+		
+		// Maybe come back to this...
 		//curveVertex(-width/2, hill_1_y_start - 25);
 		//curveVertex(-width/2, hill_1_y_start - 25); // end guide		
-	endShape();
+	pg.endShape(CLOSE);
 
 	// front hill
-	beginShape();
-		vertex(hill_2_x_start, height/2);
+	pg.beginShape();
+		pg.vertex(hill_2_x_start, height/2);
 
 		// long curve
-		curveVertex(hill_2_x_start, hill_2_y_start);
-		curveVertex(hill_2_x_start, hill_2_y_start);
-		curveVertex(hill_2_x_start + 50, hill_2_y_start + 5);
-		curveVertex(hill_2_x_start + 125, hill_2_y_start + 5);
-		curveVertex(hill_2_x_start + 180, hill_2_y_start + 20);
-		curveVertex(hill_2_x_start + 215, hill_2_y_start + 25);
-		curveVertex(hill_2_x_start + 365, hill_2_y_start + 35);
-		curveVertex(hill_2_x_start + 600, hill_2_y_start + 120);
-		curveVertex(width/2, hill_2_y_start + 250);
-		curveVertex(width/2, hill_2_y_start + 250);
+		pg.curveVertex(hill_2_x_start, hill_2_y_start);
+		pg.curveVertex(hill_2_x_start, hill_2_y_start);
+		pg.curveVertex(hill_2_x_start + 50, hill_2_y_start + 5);
+		pg.curveVertex(hill_2_x_start + 125, hill_2_y_start + 5);
+		pg.curveVertex(hill_2_x_start + 180, hill_2_y_start + 20);
+		pg.curveVertex(hill_2_x_start + 215, hill_2_y_start + 25);
+		pg.curveVertex(hill_2_x_start + 365, hill_2_y_start + 35);
+		pg.curveVertex(hill_2_x_start + 600, hill_2_y_start + 120);
+		pg.curveVertex(width/2, hill_2_y_start + 250);
+		pg.curveVertex(width/2, hill_2_y_start + 250);
 
-		vertex(width/2, height/2);
-	endShape();	
+		pg.vertex(width/2, height/2);
+	pg.endShape(CLOSE);	
 
 }
 
@@ -268,42 +284,70 @@ function drawSun() {
 	// definitely will be modified bc the sun's face changes
 	// from Scene 3 when it's Scene 5
 
-	fill(255, 255, 0);
-	circle(0, 0, width/2.5);
+	pg.fill(255, 255, 0);
 
 	//rays
 	for (let angle = 0; angle < 360; angle += 40) {
-		noStroke();
-		push();
-			rotate(radians(angle));
-			beginShape(TRIANGLES);
-				vertex(-50, width/5-10);
-				vertex(0, width/5 + 75);
-				vertex(50, width/5-10);
-			endShape();
-		pop();
+		//pg.noStroke();
+		pg.push();
+			pg.rotate(radians(angle));
+			pg.beginShape(TRIANGLES);
+				pg.vertex(-50, width/5 - 10);
+				pg.vertex(0, width/5 + 75);
+				pg.vertex(50, width/5 - 10);
+			pg.endShape();
+		pg.pop();
 	}
 
+	pg.circle(0, 0, width/2.5);
 }
 
 function drawVolcano() {
 	// draws volcano
 
-	fill(23, 52, 83);
+	pg.fill(23, 52, 83); // dark navy-blue 
 
-	beginShape();
+	pg.beginShape();
 		// left slope
-		curveVertex(-50, 0);
-		curveVertex(-50, 0);
-		curveVertex(8, -50);
-		curveVertex(50, -100);
+		pg.curveVertex(-50, 0);
+		pg.curveVertex(-50, 0);
+		pg.curveVertex(8, -50);
+		pg.curveVertex(50, -100);
 
-		curveVertex(67.5, -107	);
+		pg.curveVertex(67.5, -107);
 
 		// right slope
-		curveVertex(85, -100);
-		curveVertex(105, -55);
-		curveVertex(135, 5);
-		curveVertex(135, 5);
-	endShape();
+		pg.curveVertex(85, -100);
+		pg.curveVertex(105, -55);
+		pg.curveVertex(135, 5);
+		pg.curveVertex(135, 5);
+	pg.endShape();
+}
+
+function drawSea() {
+	// draws the wine-dark sea
+
+	pg.fill(117, 46, 68); // wine dark
+
+	// offing
+	stroke(0);
+	pg.beginShape();
+		pg.curve(-width/2, -10, -width/2, -15, width/2, -15, width/2, -10);
+		pg.vertex(width/2, height/2);
+		pg.vertex(-width/2, height/2);
+	pg.endShape();
+
+	// I think the ripples should become a class
+	// ripples
+	pg.fill(148, 58, 86);
+	//pg.noStroke();
+	for (let y = -3; y <= (height/2 - 6); y += 9) {
+		for (let x = random(-width/2 - 10, -width/2 + 10); x <= width/2; x += 25) {
+			pg.beginShape();
+				pg.vertex(x, y);
+				pg.curve(x, y, x + 7, y - 9, x + 13, y - 9, x + 20, y); // a very small curve to round the top
+				pg.vertex(x + 20, y);
+			pg.endShape();
+		}
+	}
 }
