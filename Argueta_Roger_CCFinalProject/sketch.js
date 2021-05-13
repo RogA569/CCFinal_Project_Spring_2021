@@ -1,5 +1,6 @@
 // Roger Argueta
 
+// scene variables
 let pg; // 2D buffer for 2D scenes
 let scene; // incremental scene counter
 
@@ -14,9 +15,12 @@ let single_patter; // sound file of a single raindrop
 // choice circle variables
 let yes; // a circle object that says yes
 let no; // a circle object that says no
+let yes_choice; // boolean that stores value of yes.clicked_on()
+let no_choice; // boolean that stores value of no.clicked_on()
 
 // image variables
 let the_scream; // the subject of Edward Munch's The Scream
+let beach_gif; // animated gif of the shoreline
 
 // voiceover variables; sound files for each line in script
 let voiceover_1;
@@ -28,13 +32,23 @@ let voiceover_6;
 let voiceover_7;
 let voice_switch; // allows voice to speak only once in draw()
 
+// other variables for sound files
+let splash; // sound file of a splash into water
+let seashore; // sound file of the seashore
+
 // font variables
-let roboto;
+let roboto; // stores the Roboto light typeface	
 
 function preload() {
 	the_scream = loadImage('assets/Munch_Scream_Outline.png');
 
-	soundFormats('wav');
+	// The following gif was created by Floris Kloet.
+	// The gif was licensed under CC BY 4.0
+	// The link to this license is https://creativecommons.org/licenses/by/4.0/deed
+	// You can find the gif at https://giphy.com/gifs/cinemagraph-cinemagraphs-l4hLyOGRJWNSR8QQ8
+	beach_gif = loadGif('assets/living_stills_beach_day.gif');
+
+	soundFormats('wav', 'ogg', 'mp3');
 	voiceover_1 = loadSound('assets/sound_files/Voiceover_Lines/VoiceoverScriptLine1');
 	voiceover_2 = loadSound('assets/sound_files/Voiceover_Lines/VoiceoverScriptLine2');
 	voiceover_3 = loadSound('assets/sound_files/Voiceover_Lines/VoiceoverScriptLine3');
@@ -47,7 +61,11 @@ function preload() {
 
 	single_patter = loadSound('assets/sound_files/17877__koops__rain-patter-01_render_001');
 
-	roboto = loadFont('assets/Roboto-Light.ttf')
+	splash = loadSound('assets/sound_files/536740__egomassive__splash.ogg');
+
+	seashore = loadSound('assets/sound_files/72532__kmcgraphics-com__waves-and-wind-on-the-seashore-in-youghal-ireland.mp3');
+
+	roboto = loadFont('assets/Roboto-Light.ttf');
 
 }
 
@@ -63,7 +81,6 @@ function setup() {
 
 	yes = new Choice_circle(-width/10, -height/5, 'yes');
 	no = new Choice_circle(width/6, height/8, 'no');
-	//no = new Choice_circle(0, 0, 'no');
 
 	// 2021 structure in Scenes 1 and 2
 	twty_twty_one = createWord3D("2021", width/35, width/150, 30);
@@ -162,7 +179,7 @@ function draw() {
 
 			pg.push();
 				pg.translate(width/2, height/2);
-				drawVolcano();
+				drawVolcanoMountain();
 				drawSea();
 			pg.pop();
 
@@ -215,24 +232,44 @@ function draw() {
 
 		// Scene 7 (user-dependent)
 		case 7:
-			if (voice_switch) {
-				/*// if you clicked on the yes circle
-				if (yes_choice) { // if statement is true because of what Circle_choice_object.clicked_on() returns
-					voiceover_6.play();
-				}*/
+			if (voice_switch) { // here, voice_switch is also used to play sounds just once
+				if (yes_choice) { // if you clicked on the yes circle
+					//voiceover_6.play();
 
-				// if you clicked on the no circle
-				if (no_choice) {
+					seashore.play(1); // not played immediately to give a sense of fade-in
+				}
+				if (no_choice) { // if you clicked on the no circle
 					voiceover_7.play();
+					splash.play(1.5); // play 1.5 secs after this line is run
 				}
 
 				voice_switch = false;
 			}
 
+			if (yes_choice) {
+				// beach scene, with an animation of sand meeting with the tide
+				image(pg, -width/2, -height/2);
+				pg.image(beach_gif, 0, 0, width, height);
+			}
+
+			if (no_choice) { // if you clicked on the no circle
+				background(117, 234, 234);
+
+				image(pg, -width/2, -height/2);
+
+				pg.push();
+					pg.translate(width/2, height/2);
+					drawHills(); // somehow, by what I can only describe as a miraculous accident, THIS line is needed so that you can see drawSea()...
+					drawVolcanoMountain();
+					drawSea();
+				pg.pop();
+			}
+
 			break;
 		// end of Scene 7
 
-		// Scene 8 (if fire)
+		
+		/*// Scene 8 (if fire)
 		case 8:
 			break;
 		// end of Scene 8
@@ -246,13 +283,15 @@ function draw() {
 		case 10:
 			break;
 		// end of Scene 10
+		*/
+
 
 	} // end of switch statement
 
 }
 
 function keyPressed() {
-	if (scene != 6) {
+	if ((scene != 6) && (scene != 7)) { // both are scenes that I don't want to progress using spacebar
 		if (key == ' ') {
 			scene++; // go to next scene
 			voice_switch = true; // reset voice switch
@@ -263,8 +302,17 @@ function keyPressed() {
 
 function mouseClicked() {
 	// for the choice circles in Scene 6
-	let yes_choice = yes.clicked_on();
-	let no_choice = no.clicked_on();
+	if (scene == 6) { // only applies to the 6th scene
+		yes_choice = yes.clicked_on(); // return true to yes_choice
+		no_choice = no.clicked_on(); // return true to no_choice
+
+		if ((no_choice) || (yes_choice)) { // this if statement will run as long as you click on one of the circles
+			// replacing the role of the spacebar in function keyPressed()
+			scene++;
+			voice_switch = true;
+			pg.clear();
+		}
+	}
 }
 
 function drawHills() {
@@ -279,7 +327,8 @@ function drawHills() {
 	
 	if (scene == 3) {
 		pg.fill(0, 255, 0);
-	} else if (scene == 5) {
+	}
+	if (scene == 5) {
 		pg.fill(0, 61, 55);
 	}
 	pg.stroke(1);
@@ -370,10 +419,15 @@ function drawMoonScream() {
 
 }
 
-function drawVolcano() {
-	// draws volcano
+function drawVolcanoMountain() {
+	// draws volcano/mountain
 
-	pg.fill(23, 52, 83); // dark navy-blue 
+	if (scene == 4) {
+		pg.fill(23, 52, 83); // dark navy-blue 
+	}
+	if (scene == 7) {
+		pg.fill(83, 106, 146); // a more mountain-like fill 
+	}
 
 	pg.beginShape();
 		// left slope
@@ -382,7 +436,11 @@ function drawVolcano() {
 		pg.curveVertex(8, -50);
 		pg.curveVertex(50, -100);
 
-		pg.curveVertex(67.5, -107);
+		if (scene == 4) { // only applies to the volcano
+			pg.curveVertex(67.5, -107); // creates a crater
+		} else if (scene == 7) { // applies to the mountain
+			pg.vertex(68, -120); // creates a peak
+		}
 
 		// right slope
 		pg.curveVertex(85, -100);
@@ -393,9 +451,15 @@ function drawVolcano() {
 }
 
 function drawSea() {
-	// draws the wine-dark sea
+	// draws the wine-dark or blue sea
 
-	pg.fill(117, 46, 68); // wine dark
+	if (scene == 4) {
+		pg.fill(117, 46, 68); // wine dark; default fill
+	}
+
+	if (scene == 7) {
+		pg.fill(54, 205, 255); // blue sea fill
+	}
 
 	// offing
 	stroke(0);
@@ -405,10 +469,13 @@ function drawSea() {
 		pg.vertex(-width/2, height/2);
 	pg.endShape();
 
-	// I think the ripples should become a class
 	// ripples
-	pg.fill(148, 58, 86);
-	//pg.noStroke();
+	if (scene == 4) {
+		pg.fill(148, 58, 86);
+	}
+	if (scene == 7) {
+		pg.fill(41, 158, 196);
+	}
 	for (let y = -3; y <= (height/2 - 6); y += 9) {
 		for (let x = random(-width/2 - 10, -width/2 + 10); x <= width/2; x += 25) {
 			pg.beginShape();

@@ -32,18 +32,12 @@ class Choice_circle {
 
 	clicked_on() {
 		// runs in function mouseClicked()
-		// progresses scene and returns true
-		// to one of two variables used in Scene 7
+		//returns true to one of two variables used in Scene 7
 
 		// add amounts to this.x and this.y so that they match up with the coordinates
 		// we see on the screen 
 		let d = dist(mouseX, mouseY, (this.x + width/2), (this.y + height/2)); // like translate(width/2, height/2)
 		if (d < width/12) {
-			// replacing the role of the spacebar
-			scene++;
-			voice_switch = true;
-			pg.clear();
-			
 			return true; // returning true to the choice object is associated with (yes or no)
 		}
 	}
