@@ -11,6 +11,10 @@ let explosion; // sound file of firework explosion
 let raindrops; // array of object of Raindrop class
 let single_patter; // sound file of a single raindrop
 
+// choice circle variables
+let yes; // a circle object that says yes
+let no; // a circle object that says no
+
 // image variables
 let the_scream; // the subject of Edward Munch's The Scream
 
@@ -23,6 +27,9 @@ let voiceover_5;
 let voiceover_6;
 let voiceover_7;
 let voice_switch; // allows voice to speak only once in draw()
+
+// font variables
+let roboto;
 
 function preload() {
 	the_scream = loadImage('assets/Munch_Scream_Outline.png');
@@ -40,17 +47,23 @@ function preload() {
 
 	single_patter = loadSound('assets/sound_files/17877__koops__rain-patter-01_render_001');
 
+	roboto = loadFont('assets/Roboto-Light.ttf')
+
 }
 
 function setup() {
 	createCanvas(800, 600, WEBGL);
 	pg = createGraphics(width, height); // for the scenes that render in 2D mode
 
-	scene = 5; // SET TO WHATEVER SCENE YOU'RE WORKING ON
+	scene = 6; // SET TO WHATEVER SCENE YOU'RE WORKING ON
 	userStartAudio(); // need this when running in a browser because of its autoplay policy
 	voice_switch = true;
 	fireworks = [];
 	raindrops = [];
+
+	yes = new Choice_circle(-width/10, -height/5, 'yes');
+	no = new Choice_circle(width/6, height/8, 'no');
+	//no = new Choice_circle(0, 0, 'no');
 
 	// 2021 structure in Scenes 1 and 2
 	twty_twty_one = createWord3D("2021", width/35, width/150, 30);
@@ -183,6 +196,19 @@ function draw() {
 				voiceover_5.play();
 				voice_switch = false;
 			}
+			
+			background(167, 44, 79); // an almost fever dream kind of sky
+
+			image(pg, -width/2, -height/2);
+
+			yes.display();
+			no.display();
+
+			pg.push();
+				pg.translate(width/2, height/2);
+				pg.fill(237, 201, 175);
+				pg.rect(-width/2, height/4, width, height/4); // draw simple desert land below
+			pg.pop();
 
 			break;
 		// end of Scene 6
@@ -190,9 +216,16 @@ function draw() {
 		// Scene 7 (user-dependent)
 		case 7:
 			if (voice_switch) {
-				// another if statement based on user choice
-				//voiceover_6.play(); // yes
-				voiceover_7.play(); // no
+				/*// if you clicked on the yes circle
+				if (yes_choice) { // if statement is true because of what Circle_choice_object.clicked_on() returns
+					voiceover_6.play();
+				}*/
+
+				// if you clicked on the no circle
+				if (no_choice) {
+					voiceover_7.play();
+				}
+
 				voice_switch = false;
 			}
 
@@ -219,11 +252,19 @@ function draw() {
 }
 
 function keyPressed() {
-	if (key == ' ') {
-		scene++; // go to next scene
-		voice_switch = true; // reset voice switch
-		pg.clear(); //clear insde the 2D mode buffer
+	if (scene != 6) {
+		if (key == ' ') {
+			scene++; // go to next scene
+			voice_switch = true; // reset voice switch
+			pg.clear(); //clear the 2D mode buffer
+		}
 	}
+}
+
+function mouseClicked() {
+	// for the choice circles in Scene 6
+	let yes_choice = yes.clicked_on();
+	let no_choice = no.clicked_on();
 }
 
 function drawHills() {
