@@ -73,7 +73,7 @@ function setup() {
 	createCanvas(800, 600, WEBGL);
 	pg = createGraphics(width, height); // for the scenes that render in 2D mode
 
-	scene = 6; // SET TO WHATEVER SCENE YOU'RE WORKING ON
+	scene = 1;
 	userStartAudio(); // need this when running in a browser because of its autoplay policy
 	voice_switch = true;
 	fireworks = [];
@@ -380,10 +380,14 @@ function drawHills() {
 
 function drawSun() {
 	// draws the sun
-	// definitely will be modified bc the sun's face changes
-	// from Scene 3 when it's Scene 5
+	// sun's fill changes from Scene 3 to Scene 5
 
-	pg.fill(255, 255, 0);
+	if (scene == 3) {
+		pg.fill(255, 255, 0);
+	}
+	if (scene == 5) {
+		pg.fill(219, 58, 35);
+	}
 
 	//rays
 	for (let angle = 0; angle < 360; angle += 40) {
@@ -406,15 +410,15 @@ function drawMoonScream() {
 	// the silhouette of the
 	// subject of Munch's The Scream
 
-	pg.fill(255, 246, 199);
+	pg.fill(166, 160, 129);
 
 	// moon
-	pg.circle(width/4, -height/4, width/2.5);
+	pg.circle(width/12, -height/6, width/2.5);
 
 	// The Scream, silhouette
 	pg.blendMode(DIFFERENCE);
 	the_scream.resize(143, 320)
-	pg.image(the_scream, width/4 - 70, -height/2 - 10);
+	pg.image(the_scream, width/12 - 70, -height/3 - 20);
 	pg.blendMode(BLEND);
 
 }

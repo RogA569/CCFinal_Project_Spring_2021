@@ -19,7 +19,7 @@ class Firework {
 		// firework's main form when rising (excluding trail)
 		
 		if (this.y > this.peak_height) {
-			fill(255);
+			fill(255, 0, 0);
 			noStroke();
 			circle(this.x, this.y, 10);
 		}
@@ -31,7 +31,7 @@ class Firework {
 
 		if (this.y > this.peak_height) {
 			//trail
-			fill(255, 255, 0); // yellow
+			fill(random(130, 255), random(150, 255), random(200, 255)); // really random, but bright fills
 			// trail length varies from the y-pos of firework launch (height/2)
 			// to 5 pixels below y-pos of firework in the air (this.y+5)
 			for (let trail_length = height/2; trail_length >= this.y+5; trail_length -= 10) {
