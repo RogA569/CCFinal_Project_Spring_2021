@@ -1,5 +1,12 @@
 // Roger Argueta
 
+/* INSTRUCTIONS FOR NEXT ITERATION
+	Add touch screen functionality
+	To progress to next scenes, tap anywhere on the screen
+	For the scenes with the choice circles, only progress when user
+	taps on one of the circles (may already be functional).
+*/
+
 // scene variables
 let pg; // 2D buffer for 2D scenes
 let scene; // incremental scene counter
@@ -298,6 +305,10 @@ function keyPressed() {
 			pg.clear(); //clear the 2D mode buffer
 		}
 	}
+
+	if (key == 'f' || key == 'F') {
+		fullscreen(true);
+	}
 }
 
 function mouseClicked() {
@@ -355,6 +366,7 @@ function drawHills() {
 		// Maybe come back to this...
 		//curveVertex(-width/2, hill_1_y_start - 25);
 		//curveVertex(-width/2, hill_1_y_start - 25); // end guide		
+	
 	pg.endShape(CLOSE);
 
 	// front hill
